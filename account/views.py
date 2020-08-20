@@ -71,7 +71,7 @@ class SignIn(View):
                 if bcrypt.checkpw(data['password'].encode('UTF-8'), user.password.encode('UTF-8')):
                     print("int가오는게 맞지않나",data['password'],"이건뭔데",user.password)
                     token = jwt.encode({'user':user.id}, SECRET_KEY, algorithm = 'HS256').decode('UTF-8')
-                    return JsonResponse({"token":token},status=200)
+                    return JsonResponse({"token":token,"userId":user.id},status=200)
                 return HttpResponse(status=401)
             return HttpResponse(status=400)
 

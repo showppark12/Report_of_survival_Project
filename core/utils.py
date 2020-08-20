@@ -10,6 +10,7 @@ class LoginConfirm:
         self.original_function = original_function
     
     def __call__(self, request, *args, **kwargs):
+        print("근본",request.headers)
         token = request.headers.get("Authorization", None)
         try:
             if token:
