@@ -69,6 +69,7 @@ class SignIn(View):
                 user = Account.objects.get(email=data["email"])
 
                 if bcrypt.checkpw(data['password'].encode('UTF-8'), user.password.encode('UTF-8')):
+                    print("int가오는게 맞지않나",data['password'],"이건뭔데",user.password)
                     token = jwt.encode({'user':user.id}, SECRET_KEY, algorithm = 'HS256').decode('UTF-8')
                     return JsonResponse({"token":token},status=200)
                 return HttpResponse(status=401)
@@ -132,3 +133,4 @@ class Activate(View):
             return JsonResponse({"message": "TYPE_ERROR"}, status= 400)
         except KeyError:
             return JsonResponse({"message": "INVALID_KEY"}, status = 400)
+

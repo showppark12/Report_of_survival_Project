@@ -2,6 +2,7 @@ asgiref==3.2.10
 bcrypt==3.2.0
 cffi==1.14.2
 Django==3.1
+django-cors-headers==3.4.0
 pycparser==2.20
 PyJWT==1.7.1
 pytz==2020.1
