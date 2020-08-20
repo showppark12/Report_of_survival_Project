@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'report',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleward',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -129,3 +131,6 @@ EMAIL_HOST           = EMAIL['EMAIL_HOST']
 EMAIL_HOST_USER      = EMAIL['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD  = EMAIL['EMAIL_HOST_PASSWORD']
 SERVER_EMAIL         = EMAIL['SERVER_EMAIL']
+
+CORS_ORIGIN_WHITELIST = True 
+CORS_ALLOW_CREDENTIALS = True
