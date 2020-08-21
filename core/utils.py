@@ -10,7 +10,6 @@ class LoginConfirm:
         self.original_function = original_function
     
     def __call__(self, request, *args, **kwargs):
-        print("근본",request.headers)
         token = request.headers.get("Authorization", None)
         try:
             if token:
@@ -18,7 +17,6 @@ class LoginConfirm:
                 user = Account.objects.get(id=token_payload['user'])
                 request.user = user
                 return self.original_function(self, request, *args, **kwargs)
-            
             return JsonResponse({'message':'NEED_LOGIN'}, status=401)
         
         except jwt.ExpiredSignatureError:
