@@ -7,6 +7,7 @@ from .token import account_activation_token
 from .text import message
 from mysite.my_settings import EMAIL
 from mysite.settings import SECRET_KEY
+from core.utils import LoginConfirm
 
 from django.views import View
 from django.http import HttpResponse, JsonResponse
@@ -17,11 +18,6 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
-
-class AccountView(View):
-    def get(self, request):
-        Account_data = Account.objects.values()
-        return JsonResponse({'accounts': list(Account_data)}, status=200)
 
 class SignView(View):
     def post(self, request):
@@ -134,3 +130,30 @@ class Activate(View):
         except KeyError:
             return JsonResponse({"message": "INVALID_KEY"}, status = 400)
 
+class AccountView(View):
+    @LoginConfirm
+    def get(self, request):
+        token = request.headers.get("Authorization", None)
+        try:
+            if token:
+                token_payload = jwt.decode(token, SECRET_KEY, algorithm="HS256")
+                user = Account.objects.get(id=token_payload['user'])
+                user_data = {
+                    "id":user.id,
+                    "email":user.email,
+                    "name":user.name,
+                    "description":user.description
+                }
+                return JsonResponse({'user':user_data}, status=200)
+            return JsonResponse({'message':'NEED_LOGIN'}, status=401)
+        
+        except jwt.ExpiredSignatureError:
+            return JsonResponse({'message':'EXPIRED_TOKEN'}, status =401)
+        
+        except jwt.DecodeError:
+            return JsonResponse({'message':'INVALID_USER'}, status=401)
+
+        except Account.DoesNotExist:
+            return JsonResponse({'message':'INVALID_USER'}, status = 401)
+
+        
