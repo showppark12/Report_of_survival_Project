@@ -65,11 +65,13 @@ class SignIn(View):
                 user = Account.objects.get(email=data["email"])
 
                 if bcrypt.checkpw(data['password'].encode('UTF-8'), user.password.encode('UTF-8')):
-                    print("int가오는게 맞지않나",data['password'],"이건뭔데",user.password)
-                    token = jwt.encode({'user':user.id}, SECRET_KEY, algorithm = 'HS256').decode('UTF-8')
-                    return JsonResponse({"token":token,"userId":user.id},status=200)
-                return HttpResponse(status=401)
-            return HttpResponse(status=400)
+                    if user.is_active == True:
+                        token = jwt.encode({'user':user.id}, SECRET_KEY, algorithm = 'HS256').decode('UTF-8')
+                        return JsonResponse({"token":token,"userId":user.id},status=200)
+                    else:
+                        return JsonResponse({"message":"인증되지 않은 계정입니다"}, status=401)
+                return JsonResponse({"message": "WRONG PASSWORD"},status=401)
+            return JsonResponse({"message":"EMAIL IS NOT EXIST"},status=400)
 
         except KeyError:
             return JsonResponse({"message": "INVALID_KEYS"}, status=400)
@@ -156,4 +158,24 @@ class AccountView(View):
         except Account.DoesNotExist:
             return JsonResponse({'message':'INVALID_USER'}, status = 401)
 
-        
+class Email(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        if Account.objects.filter(email=data["email"]).exists():
+            validate_email(data["email"])
+            user = Account.objects.get(email=data["email"])
+            if user.is_active == True:
+                return JsonResponse({'message':'already Authenticated'}, status= 400)
+            current_site = get_current_site(request)
+            domain = current_site.domain
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            token = account_activation_token.make_token(user)
+            message_data = message(domain, uidb64, token)
+
+            mail_title = "멋사 생존신고 회원가입 이메일 인증을 완료해주세요"
+            mail_to = data['email']
+            email = EmailMessage(mail_title, message_data, to =[mail_to])
+            email.send()
+            return JsonResponse({"message": "SUCCESS"}, status = 200)
+        else:
+            return JsonResponse({"message": "EMAIL IS NOT EXIST"}, status=400)
