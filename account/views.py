@@ -70,8 +70,8 @@ class SignIn(View):
                         return JsonResponse({"token":token,"userId":user.id},status=200)
                     else:
                         return JsonResponse({"message":"인증되지 않은 계정입니다"}, status=401)
-                return JsonResponse({"message": "WRONG PASSWORD"},status=401)
-            return JsonResponse({"message":"EMAIL IS NOT EXIST"},status=400)
+                return JsonResponse({"message": "WRONG PASSWORD"},status=403)
+            return JsonResponse({"message":"EMAIL IS NOT EXIST"},status=402)
 
         except KeyError:
             return JsonResponse({"message": "INVALID_KEYS"}, status=400)
