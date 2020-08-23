@@ -4,20 +4,26 @@ import json
 
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
-        print("니값은 뭐가저장되어있니???",dir(self))
-        self.sender_id = self.scope['url_route']['kwargs']['sender_id']
-        self.receiver_id = self.scope['url_route']['kwargs']['receiver_id']
-        print("센더", self.scope['url_route']['kwargs']['sender_id'])
-        print("리시버", self.scope['url_route']['kwargs']['receiver_id'])
-
-        self.room_group_name = 'chat_%s_%s' % (self.sender_id,self.receiver_id)
-        print("이름 어떤데",self.room_group_name)
-        # Join room group
-        async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name
-        )
-        self.accept()
+        self.command = self.scope['url_route']['kwargs']['command']
+        print("커맨드들어오냐?",self.command)
+        if self.command=="connect":
+            print("여기론안오지?")
+            self.sender_id = self.scope['url_route']['kwargs']['sender_id']
+            print(self.sender_id)
+            self.accept()
+            self.send(text_data=json.dumps({
+                'message': "gg",
+                'connector': self.sender_id
+            }))
+        elif self.command[:6]=="create":
+            receiver_id = self.command[:6]
+            print("본인 채널",self.channel_name)
+            print("채팅방에 초대시킬 상대 ",receiver_id)
+            self.room_group_name = "asdf"
+            async_to_sync(self.channel_layer.group_add)(
+                self.room_group_name,
+                self.channel_name
+            )
 
     def disconnect(self, close_code):
         # Leave room group
