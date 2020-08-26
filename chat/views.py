@@ -1,11 +1,12 @@
 import json
 from django.views import View
 from django.http import HttpResponse, JsonResponse
+from .models import ChatRoom
 
 class Chat(View):
     def get(self, requset, sender_id):
-        print("채팅보내는사람아이디",sender_id)
-        return JsonResponse({"message":"해당유저의 채팅방리스트"}, status =200)
+        chat_list = ChatRoom.objects.filter(req_user=sender_id) | ChatRoom.objects.filter(req_user=sender_id)
+        return JsonResponse({"message": list(chat_list)}, status =200)
 
     def post(self, request, sender_id):
         data = json.loads(request.body)
