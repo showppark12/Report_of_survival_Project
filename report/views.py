@@ -25,6 +25,7 @@ class ReportList(View):
     @LoginConfirm
     def get(self,request):
         data= [{
+            'id' : report_list.user.id,
             'name': report_list.user.name,
             'pub_date': report_list.pub_date,
             'message' : report_list.message

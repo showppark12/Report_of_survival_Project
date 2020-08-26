@@ -38,7 +38,6 @@ class SignView(View):
 class SignUp(View):
     def post(self, request):
         data = json.loads(request.body)
-
         try:
             if Account.objects.filter(email = data['email']).exists():
                 return JsonResponse({"message" : "EXISTS_EMAIL"}, status =400)
@@ -81,8 +80,8 @@ class SignUpView(View):
         data = json.loads(request.body)
         try:
             validate_email(data["email"])
-            
-
+            if data["email"][-12:] != 'likelion.org':
+                return JsonResponse({"message": "likelion.org계정으로 가입해주세요"}, status =400)
 
             if Account.objects.filter(email=data["email"]).exists():
                 return JsonResponse({"message": "EXIST_EMAIL"}, status =400)
