@@ -11,14 +11,14 @@ class Chat(View):
             "receiver_id" : chat.res_user.id,
             "receiver_name" : chat.res_user.name,
             "last_message" : chat.last_message().text,
-            "last_message_time" : chat.last_message().created_at
+            "last_message_time" : chat.last_message().created_at.strftime('%H:%M')
         } for chat in req_chat_list]
         res_chat_list = ChatRoom.objects.filter(res_user=sender_id)
         res_data= [{
             "receiver_id" : chat.req_user.id,
             "receiver_name" : chat.req_user.name,
             "last_message" : chat.last_message().text,
-            "last_message_time" : chat.last_message().created_at
+            "last_message_time" : chat.last_message().created_at.strftime('%H:%M')
         } for chat in res_chat_list]
         data= req_data + res_data
         data.sort(key=lambda ChatRoom: ChatRoom['last_message_time'],reverse= True)
@@ -44,12 +44,12 @@ class Chat(View):
         data= [{
             "_id" : detail.id,
             "text" : detail.text,
-            "createdAt" : detail.created_at,
+            "createdAt" : detail.created_at.strftime('%H:%M'),
             "user" : {
                 "_id" : int(detail.sender)
             },
             "room_id" : detail.room_id.id
-        } for detail in Chat_Message.objects.filter(room_id = chat_detail).order_by('created_at')]
+        } for detail in Chat_Message.objects.filter(room_id = chat_detail).order_by('-created_at')]
         print("??")
         print(data)
         return JsonResponse({"messages":data}, status=200)
