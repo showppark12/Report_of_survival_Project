@@ -8,11 +8,12 @@ class ChannelName(models.Model):
     channel_name = models.CharField(max_length=300)
 
 class ChatRoom(models.Model):
+    room_name = models.CharField(max_length=200)
     req_user = models.ForeignKey(Account, related_name ="req_chatroom", on_delete=models.CASCADE)
     res_user = models.ForeignKey(Account, related_name ="res_chatroom", on_delete=models.CASCADE)
     
-    async def last_message(self):
-        last_message = await database_sync_to_async(Chat_Message.objects.filter)(room_id = self.id)
+    def last_message(self):
+        last_message =  Chat_Message.objects.filter(room_id = self.id)
         last_message.last()
         return last_message.last()
 
