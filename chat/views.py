@@ -10,14 +10,14 @@ class Chat(View):
         req_data= [{
             "receiver_id" : chat.res_user.id,
             "receiver_name" : chat.res_user.name,
-            "last_message" : chat.last_message().text,
+            "last_message" :  chat.last_message().text,
             "last_message_time" : chat.last_message().created_at.strftime('%H:%M')
         } for chat in req_chat_list]
         res_chat_list = ChatRoom.objects.filter(res_user=sender_id)
         res_data= [{
             "receiver_id" : chat.req_user.id,
             "receiver_name" : chat.req_user.name,
-            "last_message" : chat.last_message().text,
+            "last_message" :  chat.last_message().text,
             "last_message_time" : chat.last_message().created_at.strftime('%H:%M')
         } for chat in res_chat_list]
         data= req_data + res_data
