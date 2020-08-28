@@ -13,3 +13,10 @@ class Report(models.Model):
 
     class Meta:
         db_table ='report'
+
+class DailyReportList(models.Model):
+    date = models.DateTimeField()
+    report_data = models.JSONField()
+
+    def __str__(self):
+        return self.date
