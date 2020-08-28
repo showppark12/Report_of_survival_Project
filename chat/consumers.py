@@ -42,8 +42,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.sender_id = self.scope['url_route']['kwargs']['sender_id']
         if text_data_json['type'] == 'REPORT':
             now = timezone.now().strftime('%H')
-            # int(now) >= 6 and int(now)<24
-            if False:
+            if int(now) >= 6 and int(now)<21:
                 await self.send(text_data=json.dumps({
                     "message_type" : "SYSTEM",
                     'message': "서비스 이용시간이 아닙니다."
@@ -65,7 +64,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "report",
                     { 
                         "type" : "chat.message",
-                        "message" : "renewalreport" 
+                        "real_type": "report",
+                        "reporter" : self.sender_id
                     } 
                     )
                 print("더이")
@@ -147,13 +147,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def chat_message(self, event):
         print("이벤트", event)
-        msg_type = event['type']
+        msg_type = event['real_type']
         print(msg_type)
-        message = event['message']
-        if message == "renewalreport":
+        if msg_type == "report":
+            reporter = event['reporter']
             await self.send(text_data=json.dumps({
             "message_type" : "REPORT",
-            "message" : "renewalreport"
+            "reporter" : reporter
         }))
         else:
             _id = event['_id']

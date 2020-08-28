@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponse, JsonResponse
-from .models import Report
+from .models import Report,DailyReportList
 from account.models import Account
 from django.utils import timezone
 from core.utils import LoginConfirm
@@ -37,3 +37,7 @@ class ReportList(View):
 
         } for report_list in Report.objects.all().order_by('-pub_date')]
         return JsonResponse({"report_list":data}, status=200)
+
+def DailyReport(self,request):
+    data = DailyReportList.objects.get(date=timezone.now().strftime('%Y-%m-%d'))
+    return JsonResponse({"report_list":data}, status = 200)

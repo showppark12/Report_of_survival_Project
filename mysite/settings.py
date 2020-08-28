@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'report',
     'corsheaders',
     'chat',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,8 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+CRONJOBS = [
+    # ('00 6 * * *', 'report.cron.my_cron_job')
+    ('5 * * * *', 'report.cron.my_cron_job')
+]
