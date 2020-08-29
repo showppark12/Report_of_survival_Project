@@ -162,13 +162,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
             room_id = event['room_id']
             message= event['message']
             chat_message = await database_sync_to_async(Chat_Message.objects.get)(id=_id)
+            pub_datetime =chat_message.created_at.strftime('%Y-%m-%d %H:%M')
+            print("ㅍ펍데이트타임",pub_datetime)
             # Send message to WebSocket
             await self.send(text_data=json.dumps({
                 "message_type" : "MESSAGE",
                 '_id': _id,
                 'text': message,
                 'relogin':False,
-                'createdAt': chat_message.created_at.strftime('%H:%M'),
+                'createdAt': pub_datetime,
                 'user': {
                     '_id': sender_id
                 },
