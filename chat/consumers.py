@@ -103,6 +103,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.room_group_name,
                 {
                     'type': 'chat.message',
+                    'real_type': "message",
                     '_id': send_message.id,
                     'sender_id': send_message.room_id.req_user.id,
                     'message': message,
@@ -111,6 +112,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
         elif text_data_json['type'] == 'MESSAGE':
             relogin = text_data_json['relogin']
+            message = text_data_json['message']
             print("리로그인", relogin)
             room_id = text_data_json['room_id']
             cr = await database_sync_to_async(ChatRoom.objects.get)(id=room_id)
@@ -137,6 +139,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 cr.room_name,
                 {
                     'type': 'chat.message',
+                    'real_type': "message",
                     '_id': send_message.id,
                     'room_id': room_id,
                     'sender_id': sender.id,
@@ -159,6 +162,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             _id = event['_id']
             sender_id = event['sender_id']
             room_id = event['room_id']
+            message= event['message']
             chat_message = await database_sync_to_async(Chat_Message.objects.get)(id=_id)
             # Send message to WebSocket
             await self.send(text_data=json.dumps({
