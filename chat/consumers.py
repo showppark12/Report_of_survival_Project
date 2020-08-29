@@ -42,7 +42,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.sender_id = self.scope['url_route']['kwargs']['sender_id']
         if text_data_json['type'] == 'REPORT':
             now = timezone.now().strftime('%H')
-            if int(now) >= 6 and int(now)<21:
+            print("현재 시각은?",now)
+            if int(now) >= 6 and int(now)<15:
                 await self.send(text_data=json.dumps({
                     "message_type" : "SYSTEM",
                     'message': "서비스 이용시간이 아닙니다."
@@ -122,9 +123,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     cr.room_name,
                     self.channel_name
                 )
-                await self.send(text_data=json.dumps({
-                    'relogin':False,
-                }))
             print("이거 뭐라고 들어오길래????", message)
             sender = await database_sync_to_async(Account.objects.get)(id=self.sender_id)
             print("여기까진오니?101")
@@ -169,6 +167,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "message_type" : "MESSAGE",
                 '_id': _id,
                 'text': message,
+                'relogin':False,
                 'createdAt': chat_message.created_at.strftime('%H:%M'),
                 'user': {
                     '_id': sender_id
