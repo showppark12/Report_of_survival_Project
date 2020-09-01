@@ -41,9 +41,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         self.sender_id = self.scope['url_route']['kwargs']['sender_id']
         if text_data_json['type'] == 'REPORT':
-            now = timezone.now().strftime('%H')
+            # now = timezone.now().strftime('%H')
+            # int(now) >= 6 and int(now)<15
             print("현재 시각은?",now)
-            if int(now) >= 6 and int(now)<15:
+            if False:
                 await self.send(text_data=json.dumps({
                     "message_type" : "SYSTEM",
                     'message': "서비스 이용시간이 아닙니다."
