@@ -43,7 +43,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if text_data_json['type'] == 'REPORT':
             # now = timezone.now().strftime('%H')
             # int(now) >= 6 and int(now)<15
-            print("현재 시각은?",now)
+
             if False:
                 await self.send(text_data=json.dumps({
                     "message_type" : "SYSTEM",
