@@ -10,3 +10,4 @@ application = ProtocolTypeRouter({
         )
     ),
 })
+ASGI_APPLICATION = "mysite.routing.application"
